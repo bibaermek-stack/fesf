@@ -46,6 +46,8 @@ export const useAuthStore = create<AuthState>()((set) => ({
       const next = !s.darkMode;
       if (typeof document !== "undefined") {
         document.documentElement.classList.toggle("dark", next);
+        // Persisted, so the choice survives a reload — AppProviders reads it.
+        window.localStorage.setItem("mechanics-lms:darkMode", String(next));
       }
       return { darkMode: next };
     }),

@@ -11,12 +11,12 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
   const setLoading = useAuthStore((s) => s.setLoading);
 
   useEffect(() => {
-    // Restore dark mode preference
-    const stored = typeof window !== "undefined" ? window.localStorage.getItem("mechanics-lms:darkMode") : null;
-    if (stored === "true") {
-      document.documentElement.classList.add("dark");
-      useAuthStore.setState({ darkMode: true });
-    }
+    // The redesign is dark-first, so dark is the default rather than an
+    // opt-in; only an explicit "false" from a previous session turns it off.
+    const stored = window.localStorage.getItem("mechanics-lms:darkMode");
+    const dark = stored === null ? true : stored === "true";
+    document.documentElement.classList.toggle("dark", dark);
+    useAuthStore.setState({ darkMode: dark });
   }, []);
 
   useEffect(() => {

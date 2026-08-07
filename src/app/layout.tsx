@@ -1,6 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { AppProviders } from "@/components/providers/AppProviders";
+import { SceneBackground } from "@/components/fx/SceneBackground";
+import { LoadingScreen } from "@/components/fx/LoadingScreen";
+import { SmoothScroll } from "@/components/motion/SmoothScroll";
+import { ObjectStageProvider } from "@/components/three/ObjectStage";
+import { PageTransition } from "@/components/motion/PageTransition";
 
 export const metadata: Metadata = {
   title: "Механика AI LMS — Ақпараттық-коммуникативтік құзыреттілік платформасы",
@@ -10,7 +15,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#1f47e6",
+  themeColor: "#05070f",
   width: "device-width",
   initialScale: 1,
 };
@@ -21,9 +26,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="kk" suppressHydrationWarning>
+    // `dark` is set here as well as in AppProviders so the first paint is
+    // already dark — otherwise the page flashes white before hydration.
+    <html lang="kk" className="dark" suppressHydrationWarning>
       <body className="min-h-screen antialiased">
-        <AppProviders>{children}</AppProviders>
+        <AppProviders>
+          {/* Background and the shared 3D canvas live above the router, so
+              they survive navigation instead of being torn down and rebuilt
+              (which would recompile every shader on each route change). */}
+          <SceneBackground />
+          <SmoothScroll />
+          <LoadingScreen />
+          <ObjectStageProvider>
+            <PageTransition>{children}</PageTransition>
+          </ObjectStageProvider>
+        </AppProviders>
       </body>
     </html>
   );

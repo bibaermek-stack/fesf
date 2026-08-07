@@ -2,7 +2,8 @@
 
 import { useRef } from "react";
 import * as THREE from "three";
-import { useFrame, useThree } from "@react-three/fiber";
+import { useFrame } from "@react-three/fiber";
+import { pointer } from "@/lib/pointer";
 
 /**
  * Ambient float plus cursor parallax, applied to whatever it wraps.
@@ -44,7 +45,6 @@ export function Floating({
   frozen?: boolean;
 }) {
   const group = useRef<THREE.Group>(null!);
-  const { pointer } = useThree();
   const targetRX = useRef(0);
   const targetRY = useRef(0);
   const spinRef = useRef(0);

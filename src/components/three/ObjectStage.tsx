@@ -169,7 +169,12 @@ export function ObjectStageProvider({ children }: { children: React.ReactNode })
 /**
  * Reserves a rectangle in the page that the shared canvas draws one STEM
  * object into. Falls back to a static, non-animating pose under reduced
- * motion, and to an empty box if the stage provider is missing.
+ * motion, and to an empty box until the stage's canvas exists.
+ *
+ * Note the `className` goes on <View/> itself: outside a Canvas, drei's View
+ * renders *its own* div and tracks that one — a `track` prop is ignored in
+ * that mode, so wrapping it in another div leaves View measuring a zero-height
+ * box and nothing is ever drawn.
  */
 export function StemObject({
   kind,
@@ -196,7 +201,6 @@ export function StemObject({
   const { ready, register } = useContext(StageContext);
   const reduced = useReducedMotion();
   const Model = REGISTRY[kind];
-  const trackRef = useRef<HTMLDivElement>(null!);
 
   // Registering in an effect (not during render) keeps the provider's state
   // update out of the render phase.
@@ -222,9 +226,13 @@ export function StemObject({
     [Model, amplitude, distance, phase, reduced, scale, speed, spin, tilt]
   );
 
+  // Before the canvas exists, hold the same box so the layout does not shift
+  // when the object appears.
+  if (!ready) return <div className={className} aria-hidden />;
+
   return (
-    <div ref={trackRef} className={className} aria-hidden>
-      {ready && <View track={trackRef}>{content}</View>}
-    </div>
+    <View className={className} aria-hidden>
+      {content}
+    </View>
   );
 }

@@ -3,12 +3,14 @@
 import "./ChartSetup";
 import { Bar } from "react-chartjs-2";
 import { PROGRESS_BUCKETS } from "@/data/cohort";
+import { useChartTheme } from "./useChartTheme";
 
 /**
  * How the cohort is spread across progress bands. An average hides whether the
  * group is uniform or split into "finished" and "stalled"; this does not.
  */
 export function ProgressDistributionChart({ buckets }: { buckets: number[] }) {
+  const t = useChartTheme();
   const data = {
     labels: PROGRESS_BUCKETS,
     datasets: [
@@ -23,16 +25,36 @@ export function ProgressDistributionChart({ buckets }: { buckets: number[] }) {
 
   return (
     <Bar
+      key={t.version}
       data={data}
       options={{
         animation: false,
         plugins: {
           legend: { display: false },
-          tooltip: { callbacks: { label: (t) => `${t.formattedValue} студент` } },
+          tooltip: {
+            backgroundColor: t.tooltipBg,
+            titleColor: t.tooltipText,
+            bodyColor: t.tooltipText,
+            borderColor: t.gridStrong,
+            borderWidth: 1,
+            padding: 10,
+            cornerRadius: 10,
+            displayColors: false,
+            callbacks: { label: (c) => `${c.formattedValue} студент` },
+          },
         },
         scales: {
-          y: { beginAtZero: true, ticks: { precision: 0 } },
-          x: { grid: { display: false } },
+          y: {
+            beginAtZero: true,
+            grid: { color: t.grid },
+            border: { display: false },
+            ticks: { color: t.textMuted, font: { size: 11 }, precision: 0 },
+          },
+          x: {
+            grid: { display: false },
+            border: { color: t.grid },
+            ticks: { color: t.textMuted, font: { size: 11 } },
+          },
         },
       }}
     />

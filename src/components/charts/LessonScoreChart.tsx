@@ -3,6 +3,7 @@
 import "./ChartSetup";
 import { Bar } from "react-chartjs-2";
 import { LESSON_SHORT } from "@/data/cohort";
+import { useChartTheme } from "./useChartTheme";
 
 /**
  * Score per lesson — used both for a cohort average (teacher analytics) and a
@@ -20,6 +21,7 @@ export function LessonScoreChart({
   threshold?: number;
   label?: string;
 }) {
+  const t = useChartTheme();
   const data = {
     labels: LESSON_SHORT,
     datasets: [
@@ -36,12 +38,21 @@ export function LessonScoreChart({
 
   return (
     <Bar
+      key={t.version}
       data={data}
       options={{
         animation: false,
         plugins: {
           legend: { display: false },
           tooltip: {
+            backgroundColor: t.tooltipBg,
+            titleColor: t.tooltipText,
+            bodyColor: t.tooltipText,
+            borderColor: t.gridStrong,
+            borderWidth: 1,
+            padding: 10,
+            cornerRadius: 10,
+            displayColors: false,
             callbacks: {
               title: (t) => `${t[0].label}-сабақ`,
               label: (t) => {
@@ -52,8 +63,18 @@ export function LessonScoreChart({
           },
         },
         scales: {
-          y: { beginAtZero: true, max: 100, ticks: { callback: (v) => `${v}%` } },
-          x: { grid: { display: false } },
+          y: {
+            beginAtZero: true,
+            max: 100,
+            grid: { color: t.grid },
+            border: { display: false },
+            ticks: { color: t.textMuted, font: { size: 11 }, callback: (v) => `${v}%` },
+          },
+          x: {
+            grid: { display: false },
+            border: { color: t.grid },
+            ticks: { color: t.textMuted, font: { size: 11 } },
+          },
         },
       }}
     />

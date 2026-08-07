@@ -8,6 +8,7 @@ import { Magnetic } from "@/components/motion/Magnetic";
 
 const LINKS = [
   { href: "#labs", label: "Зертханалар" },
+  { href: "#equipment", label: "Жабдық" },
   { href: "#stack", label: "Технология" },
   { href: "#numbers", label: "Нәтижелер" },
 ];

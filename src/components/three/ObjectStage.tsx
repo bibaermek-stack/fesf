@@ -9,7 +9,16 @@
 // page, and each <StemObject> just reserves a rectangle that the shared
 // renderer draws into with its own camera and scene graph.
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import {
+  createContext,
+  Suspense,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import * as THREE from "three";
 import { Canvas } from "@react-three/fiber";
 import { Environment, PerspectiveCamera, View } from "@react-three/drei";
@@ -35,6 +44,8 @@ import {
   Rocket,
   Satellite,
 } from "./objects/Tech";
+import { PascoModel } from "@/components/simulation/core/PascoModel";
+import { PASCO } from "@/components/simulation/core/pascoCatalog";
 
 export type StemObjectKind =
   | "atom"
@@ -52,7 +63,27 @@ export type StemObjectKind =
   | "drone"
   | "robot"
   | "books"
-  | "geometry";
+  | "geometry"
+  // The real photogrammetry scans of the lab hardware the course is built on.
+  | "smartCart"
+  | "smartGate"
+  | "motionSensor";
+
+/**
+ * Wraps a scanned PASCO device for the marketing stage.
+ *
+ * `groundAlign` is off here: the simulations stand these on a bench, but on a
+ * floating card the object should pivot about its own centre or it wobbles
+ * around a corner. The scan is normalised to real-world size by PascoModel, so
+ * `size` scales that up to fill the small viewport.
+ */
+function pasco(key: "smartCart" | "smartGate" | "motionSensor", size: number) {
+  const Component = ({ scale = 1 }: { scale?: number }) => (
+    <PascoModel spec={PASCO[key]} groundAlign={false} scale={scale * size} />
+  );
+  Component.displayName = `Pasco(${key})`;
+  return Component;
+}
 
 const REGISTRY: Record<StemObjectKind, (p: { scale?: number }) => JSX.Element> = {
   atom: Atom,
@@ -71,6 +102,11 @@ const REGISTRY: Record<StemObjectKind, (p: { scale?: number }) => JSX.Element> =
   robot: RobotArm,
   books: BookStack,
   geometry: GeometrySet,
+  // Scans are centimetres-tall in world units; these factors bring them up to
+  // the ~1 unit scale the procedural objects are modelled at.
+  smartCart: pasco("smartCart", 5),
+  smartGate: pasco("smartGate", 9),
+  motionSensor: pasco("motionSensor", 13),
 };
 
 interface StageApi {
@@ -219,7 +255,11 @@ export function StemObject({
           phase={phase}
           frozen={reduced}
         >
-          <Model scale={scale} />
+          {/* The PASCO kinds load a GLB and therefore suspend. The boundary has
+              to sit inside the view or one slow scan blanks the whole canvas. */}
+          <Suspense fallback={null}>
+            <Model scale={scale} />
+          </Suspense>
         </Floating>
       </>
     ),

@@ -4,6 +4,7 @@ import { ALL_MODULES } from "@/data/modules";
 import { SiteNav } from "@/components/layout/SiteNav";
 import { Hero } from "@/components/landing/Hero";
 import { LabCard } from "@/components/landing/LabCard";
+import { PascoShowcase } from "@/components/landing/PascoShowcase";
 import { SiteFooter } from "@/components/landing/SiteFooter";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion/Reveal";
 import { CountUp } from "@/components/motion/CountUp";
@@ -36,7 +37,7 @@ const STACK = [
     desc: "Механика бойынша 24/7 жеке көмекші — тек қазақ тілінде жауап береді, формуланы қадаммен талдайды.",
   },
   {
-    kind: "microscope" as StemObjectKind,
+    kind: "motionSensor" as StemObjectKind,
     title: "Нақты өлшеу",
     desc: "PASCO Smart Cart пен Smart Gate сканерленген модельдері, физикасы шынайы интегратормен есептеледі.",
   },
@@ -99,6 +100,9 @@ export default function LandingPage() {
             })}
           </Stagger>
         </section>
+
+        {/* Real scanned equipment ------------------------------------------ */}
+        <PascoShowcase />
 
         {/* Numbers --------------------------------------------------------- */}
         <section id="numbers" className="relative mx-auto max-w-5xl scroll-mt-24 px-6 py-16">

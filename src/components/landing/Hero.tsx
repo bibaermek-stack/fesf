@@ -21,8 +21,9 @@ const ORBIT = [
   { kind: "dna", pos: "right-[7%] top-[14%]", size: "h-32 w-32", scale: 1.05, phase: 1.1 },
   { kind: "microchip", pos: "left-[12%] bottom-[20%]", size: "h-28 w-28", scale: 0.95, phase: 2.2 },
   { kind: "satellite", pos: "right-[10%] bottom-[24%]", size: "h-28 w-28", scale: 1.1, phase: 3 },
-  { kind: "molecule", pos: "left-[26%] top-[8%]", size: "h-24 w-24", scale: 1, phase: 0.6 },
-  { kind: "geometry", pos: "right-[25%] bottom-[10%]", size: "h-24 w-24", scale: 0.85, phase: 1.8 },
+  { kind: "atom", pos: "left-[26%] top-[8%]", size: "h-24 w-24", scale: 1, phase: 0.6 },
+  // The photogate scan, orbiting the cart it actually times.
+  { kind: "smartGate", pos: "right-[25%] bottom-[10%]", size: "h-28 w-28", scale: 1, phase: 1.8 },
 ] as const;
 
 /** Formulas drifting in the background, the "physics in space" motif. */
@@ -113,12 +114,17 @@ export function Hero() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.1, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
         >
+          {/* The scanned Smart Cart, not a stand-in: the claim in the
+              paragraph above is that the hardware is real, so the hero should
+              be the hardware. It spins slowly because a scan only reads as a
+              scan once you have seen its back. */}
           <StemObject
-            kind="atom"
+            kind="smartCart"
             className="h-full w-full"
-            scale={1.5}
-            distance={4.2}
-            amplitude={0.1}
+            scale={1.35}
+            distance={3.5}
+            spin={0.25}
+            amplitude={0.09}
             speed={0.6}
             tilt={0.4}
           />

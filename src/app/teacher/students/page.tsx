@@ -1,48 +1,115 @@
-import { DashboardShell } from "@/components/layout/DashboardShell";
-import { Badge } from "@/components/ui/Badge";
+"use client";
 
-const STUDENTS = [
-  { name: "Айгерім Болатқызы", group: "МТ-21", progress: 68, competency: 74, status: "Белсенді" },
-  { name: "Динара Нұрланқызы", group: "МТ-21", progress: 95, competency: 92, status: "Белсенді" },
-  { name: "Ерасыл Тоқтарұлы", group: "МТ-22", progress: 88, competency: 88, status: "Белсенді" },
-  { name: "Мадина Сәрсенқызы", group: "МТ-21", progress: 52, competency: 71, status: "Пассивті" },
-  { name: "Асхат Жомартұлы", group: "МТ-22", progress: 40, competency: 65, status: "Пассивті" },
-];
+import Link from "next/link";
+import { DashboardShell } from "@/components/layout/DashboardShell";
+import { SectionHeader } from "@/components/ui/SectionHeader";
+import { StatCard } from "@/components/ui/StatCard";
+import { Badge } from "@/components/ui/Badge";
+import { ProgressBar } from "@/components/ui/ProgressBar";
+import { DataTable, type Column } from "@/components/ui/DataTable";
+import { ALL_MODULES } from "@/data/modules";
+import {
+  COHORT,
+  cohortSummary,
+  studentAverage,
+  studentProgress,
+  type StudentRow,
+} from "@/data/cohort";
+
+/** Same rule the analytics recommendations use, so the two pages never disagree. */
+function status(r: StudentRow) {
+  const p = studentProgress(r);
+  const a = studentAverage(r);
+  if (p < 50 && a < 65) return { label: "Қауіп тобы", variant: "danger" as const };
+  if (r.daysSinceActive >= 7) return { label: "Белсенді емес", variant: "warning" as const };
+  return { label: "Белсенді", variant: "success" as const };
+}
 
 export default function TeacherStudentsPage() {
+  const summary = cohortSummary();
+  const atRisk = COHORT.filter((r) => status(r).label === "Қауіп тобы").length;
+  const inactive = COHORT.filter((r) => status(r).label === "Белсенді емес").length;
+
+  const columns: Column<StudentRow>[] = [
+    { key: "name", header: "Студент", render: (r) => r.fullName },
+    { key: "group", header: "Топ", width: "80px", render: (r) => r.group },
+    {
+      key: "progress",
+      header: "Прогресс",
+      width: "180px",
+      render: (r) => (
+        <ProgressBar
+          value={studentProgress(r)}
+          segments={ALL_MODULES.length}
+          tone={studentProgress(r) < 50 ? "amber" : "emerald"}
+        />
+      ),
+    },
+    { key: "avg", header: "Орташа ұпай", numeric: true, render: (r) => `${studentAverage(r)}%` },
+    {
+      key: "ungraded",
+      header: "Тексерілмеген",
+      numeric: true,
+      render: (r) => (r.ungraded > 0 ? r.ungraded : "—"),
+    },
+    {
+      key: "active",
+      header: "Соңғы кіру",
+      numeric: true,
+      render: (r) => (r.daysSinceActive === 0 ? "бүгін" : `${r.daysSinceActive} күн`),
+    },
+    {
+      key: "status",
+      header: "Мәртебе",
+      width: "150px",
+      render: (r) => {
+        const s = status(r);
+        return <Badge variant={s.variant}>{s.label}</Badge>;
+      },
+    },
+  ];
+
   return (
     <DashboardShell>
       <div className="space-y-6">
-        <div>
-          <h1 className="text-2xl font-bold">Студенттерді басқару</h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400">Барлық студенттердің прогресі мен құзыреттілігі.</p>
+        <SectionHeader
+          as="h1"
+          title="Студенттерді басқару"
+          description="Барлық студенттердің прогресі, ұпайы және белсенділігі."
+          action={
+            <Link href="/teacher/analytics" className="btn-secondary px-4 py-2 text-sm">
+              Аналитикаға өту
+            </Link>
+          }
+        />
+
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <StatCard label="Барлық студент" value={summary.students} tone="brand" />
+          <StatCard
+            label="Қауіп тобында"
+            value={atRisk}
+            context="Прогресі 50%-дан және ұпайы 65%-дан төмен"
+            tone={atRisk > 0 ? "rose" : "default"}
+          />
+          <StatCard
+            label="Бір аптадан бері кірмеген"
+            value={inactive}
+            tone={inactive > 0 ? "amber" : "default"}
+          />
+          <StatCard
+            label="Орташа прогресс"
+            value={summary.avgProgress}
+            unit="%"
+            tone="emerald"
+          />
         </div>
-        <div className="overflow-hidden rounded-xl2 border border-slate-200/60 dark:border-white/10">
-          <table className="w-full text-sm">
-            <thead className="bg-slate-50 text-left text-xs uppercase text-slate-500 dark:bg-white/5 dark:text-slate-400">
-              <tr>
-                <th className="px-4 py-3">Студент</th>
-                <th className="px-4 py-3">Топ</th>
-                <th className="px-4 py-3">Прогресс</th>
-                <th className="px-4 py-3">Құзыреттілік</th>
-                <th className="px-4 py-3">Мәртебе</th>
-              </tr>
-            </thead>
-            <tbody>
-              {STUDENTS.map((s) => (
-                <tr key={s.name} className="border-t border-slate-100 dark:border-white/5">
-                  <td className="px-4 py-3 font-medium">{s.name}</td>
-                  <td className="px-4 py-3">{s.group}</td>
-                  <td className="px-4 py-3">{s.progress}%</td>
-                  <td className="px-4 py-3">{s.competency}%</td>
-                  <td className="px-4 py-3">
-                    <Badge variant={s.status === "Белсенді" ? "success" : "warning"}>{s.status}</Badge>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+
+        <DataTable
+          columns={columns}
+          rows={COHORT}
+          rowKey={(r) => r.id}
+          highlight={(r) => status(r).label === "Қауіп тобы"}
+        />
       </div>
     </DashboardShell>
   );

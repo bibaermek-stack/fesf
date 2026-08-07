@@ -18,11 +18,11 @@ export default function LoginPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center px-4">
-      <div className="glass-card w-full max-w-sm">
+      <div className="surface-card w-full max-w-sm">
         <div className="mb-6 text-center">
-          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-brand-500 text-xl font-bold text-white">М</div>
-          <h1 className="text-xl font-bold">Механика AI LMS-ке кіру</h1>
-          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-brand-500 text-h2 text-white">М</div>
+          <h1 className="text-h2">Механика AI LMS-ке кіру</h1>
+          <p className="mt-1 text-body text-slate-600 dark:text-slate-400">
             {isFirebaseConfigured ? "Оқу платформасына кіріңіз" : "Демо режим — нақты тіркелгі қажет емес"}
           </p>
         </div>
@@ -30,7 +30,7 @@ export default function LoginPage() {
         <div className="mb-4 flex rounded-xl bg-slate-100 p-1 dark:bg-white/5">
           <button
             onClick={() => setRole("student")}
-            className={`flex-1 rounded-lg py-2 text-sm font-semibold transition ${
+            className={`flex-1 rounded-lg py-2 text-sm font-semibold transition-colors ${
               role === "student" ? "bg-white shadow dark:bg-slate-700" : "text-slate-500"
             }`}
           >
@@ -38,7 +38,7 @@ export default function LoginPage() {
           </button>
           <button
             onClick={() => setRole("teacher")}
-            className={`flex-1 rounded-lg py-2 text-sm font-semibold transition ${
+            className={`flex-1 rounded-lg py-2 text-sm font-semibold transition-colors ${
               role === "teacher" ? "bg-white shadow dark:bg-slate-700" : "text-slate-500"
             }`}
           >
@@ -54,7 +54,7 @@ export default function LoginPage() {
           <Chrome size={16} /> Google аркылы кіру
         </button>
 
-        <p className="mt-4 text-center text-xs text-slate-400">
+        <p className="mt-4 text-center text-micro text-slate-600">
           Google Login толық іске қосу үшін .env.local файлында GOOGLE_CLIENT_ID мәнін орнатыңыз.
         </p>
       </div>

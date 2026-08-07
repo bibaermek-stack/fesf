@@ -3,6 +3,14 @@
 import { useState } from "react";
 import { Bell, Moon, Sun, Search, Menu } from "lucide-react";
 import { useAuthStore } from "@/lib/authStore";
+import { Badge } from "@/components/ui/Badge";
+
+// Notification kinds are labelled in words, so the meaning does not depend on
+// an emoji rendering the same way on every device.
+const NOTIFICATIONS: { tag: string; variant: "default" | "success"; text: string }[] = [
+  { tag: "Тапсырма", variant: "default", text: "«Кинематика» модулінің викторинасын аяқтаңыз." },
+  { tag: "Кері байланыс", variant: "success", text: "БӨЖ тапсырмаңызға оқытушы пікір қалдырды." },
+];
 
 export function Navbar() {
   const user = useAuthStore((s) => s.user);
@@ -11,58 +19,61 @@ export function Navbar() {
   const [notifOpen, setNotifOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-30 flex items-center justify-between gap-4 border-b border-slate-200/60 bg-white/70 px-4 py-3 backdrop-blur-xl dark:border-white/10 dark:bg-slate-900/60 md:px-6">
+    <header className="sticky top-0 z-30 flex items-center justify-between gap-4 border-b border-slate-200 bg-white px-4 py-2.5 dark:border-white/10 dark:bg-slate-900 md:px-6">
       <div className="flex items-center gap-3">
-        <button className="rounded-lg p-2 hover:bg-slate-100 dark:hover:bg-white/10 md:hidden">
+        <button className="btn-ghost md:hidden" aria-label="Мәзір">
           <Menu size={20} />
         </button>
-        <div className="hidden items-center gap-2 rounded-xl bg-slate-100 px-3 py-2 dark:bg-white/5 md:flex">
-          <Search size={16} className="text-slate-400" />
+        <div className="hidden items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 dark:border-white/10 dark:bg-white/5 md:flex">
+          <Search size={16} className="text-slate-500" />
           <input
             placeholder="Сабақтардан, терминдерден іздеу..."
-            className="w-64 bg-transparent text-sm outline-none placeholder:text-slate-400"
+            aria-label="Іздеу"
+            className="w-64 bg-transparent text-sm outline-none placeholder:text-slate-500"
           />
         </div>
       </div>
 
-      <div className="flex items-center gap-2">
-        <button
-          onClick={toggleDarkMode}
-          className="rounded-lg p-2 text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/10"
-          aria-label="Түнгі режим"
-        >
+      <div className="flex items-center gap-1.5">
+        <button onClick={toggleDarkMode} className="btn-ghost" aria-label="Түнгі режим">
           {darkMode ? <Sun size={18} /> : <Moon size={18} />}
         </button>
         <div className="relative">
           <button
             onClick={() => setNotifOpen((v) => !v)}
-            className="relative rounded-lg p-2 text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/10"
-            aria-label="Хабарландырулар"
+            className="btn-ghost"
+            aria-label={`Хабарландырулар (${NOTIFICATIONS.length})`}
+            aria-expanded={notifOpen}
           >
             <Bell size={18} />
-            <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-rose-500" />
+            {/* Count, not a bare dot: it says how many without needing colour. */}
+            <span className="data-num ml-0.5 rounded-full bg-rose-500 px-1.5 text-[10px] font-bold leading-4 text-white">
+              {NOTIFICATIONS.length}
+            </span>
           </button>
           {notifOpen && (
-            <div className="absolute right-0 mt-2 w-72 rounded-xl border border-slate-200 bg-white p-3 shadow-xl dark:border-white/10 dark:bg-slate-800">
-              <p className="mb-2 text-sm font-semibold">Хабарландырулар</p>
-              <div className="space-y-2 text-sm">
-                <p className="rounded-lg bg-brand-50 p-2 dark:bg-white/5">
-                  🎯 «Кинематика» модулінің викторинасын аяқтаңыз.
-                </p>
-                <p className="rounded-lg bg-emerald-50 p-2 dark:bg-white/5">
-                  ✅ БӨЖ тапсырмаңызға оқытушы кері байланыс қалдырды.
-                </p>
-              </div>
+            <div className="surface-raised absolute right-0 mt-2 w-80 p-3">
+              <p className="mb-2 text-label uppercase text-slate-500 dark:text-slate-400">
+                Хабарландырулар
+              </p>
+              <ul className="divide-y divide-slate-100 dark:divide-white/5">
+                {NOTIFICATIONS.map((n) => (
+                  <li key={n.text} className="flex items-start gap-2.5 py-2.5 first:pt-0 last:pb-0">
+                    <Badge variant={n.variant}>{n.tag}</Badge>
+                    <p className="text-body text-slate-700 dark:text-slate-200">{n.text}</p>
+                  </li>
+                ))}
+              </ul>
             </div>
           )}
         </div>
-        <div className="flex items-center gap-2 rounded-xl bg-slate-100 px-2 py-1.5 dark:bg-white/5">
+        <div className="flex items-center gap-2 rounded-xl border border-slate-200 px-2 py-1.5 dark:border-white/10">
           <div className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-500 text-sm font-bold text-white">
             {user?.fullName?.charAt(0) ?? "?"}
           </div>
           <div className="hidden text-left sm:block">
             <p className="text-xs font-semibold leading-tight">{user?.fullName ?? "Қонақ"}</p>
-            <p className="text-[10px] text-slate-500 dark:text-slate-400">
+            <p className="text-micro text-slate-500 dark:text-slate-400">
               {user?.role === "teacher" ? "Оқытушы" : "Студент"}
             </p>
           </div>

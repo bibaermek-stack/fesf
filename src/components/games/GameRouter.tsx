@@ -50,7 +50,7 @@ export function GameRouter({ mod }: { mod: LessonModule }) {
               setMode(m);
               setLastScore(null);
             }}
-            className={`rounded-full px-3 py-1.5 text-xs font-semibold transition ${
+            className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${
               mode === m
                 ? "bg-brand-500 text-white"
                 : "bg-slate-100 text-slate-600 hover:bg-brand-50 dark:bg-white/5 dark:text-slate-300"
@@ -61,7 +61,7 @@ export function GameRouter({ mod }: { mod: LessonModule }) {
         ))}
       </div>
 
-      <p className="text-sm text-slate-500 dark:text-slate-400">{mod.game.instructions}</p>
+      <p className="text-body text-slate-600 dark:text-slate-400">{mod.game.instructions}</p>
 
       {mode === "matching" && mod.game.pairs && (
         <MatchingGame key={`matching-${mod.id}`} pairs={mod.game.pairs} onComplete={handleComplete} />
@@ -80,7 +80,7 @@ export function GameRouter({ mod }: { mod: LessonModule }) {
       )}
 
       {lastScore !== null && (
-        <div className="glass-card flex items-center gap-3">
+        <div className="surface-card flex items-center gap-3">
           <Trophy className="text-amber-500" />
           <p className="text-sm font-semibold">Ойын нәтижесі: {lastScore} / 100 ұпай. Ұпай құзыреттілік бағасына қосылады.</p>
         </div>

@@ -46,7 +46,7 @@ export function MatchingGame({
               key={left}
               disabled={isMatched}
               onClick={() => setSelectedLeft(left)}
-              className={`flex w-full items-center justify-between rounded-xl border px-3 py-2.5 text-left text-sm transition ${
+              className={`flex w-full items-center justify-between rounded-xl border px-3 py-2.5 text-left text-sm transition-colors ${
                 isMatched
                   ? "border-emerald-300 bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-200"
                   : selectedLeft === left
@@ -68,7 +68,7 @@ export function MatchingGame({
               key={right}
               disabled={isUsed}
               onClick={() => handleRightClick(right)}
-              className={`w-full rounded-xl border px-3 py-2.5 text-left text-sm transition ${
+              className={`w-full rounded-xl border px-3 py-2.5 text-left text-sm transition-colors ${
                 isUsed
                   ? "border-emerald-300 bg-emerald-50 text-emerald-700 opacity-60 dark:bg-emerald-900/20 dark:text-emerald-200"
                   : wrongFlash === right
@@ -83,7 +83,7 @@ export function MatchingGame({
       </div>
       {isDone && (
         <p className="col-span-full rounded-xl bg-emerald-50 p-3 text-center text-sm font-semibold text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-200">
-          🎉 Керемет! Барлық жұптарды дұрыс сәйкестендірдіңіз.
+          Керемет! Барлық жұптарды дұрыс сәйкестендірдіңіз.
         </p>
       )}
     </div>

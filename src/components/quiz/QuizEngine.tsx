@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { CheckCircle2, XCircle, RotateCcw } from "lucide-react";
 import { randomizeQuiz } from "@/data/modules";
-import { GlassCard } from "@/components/ui/GlassCard";
+import { Card } from "@/components/ui/Card";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 import { useAuthStore } from "@/lib/authStore";
 import { saveQuizAttempt, generateId } from "@/lib/dataStore";
@@ -52,10 +52,10 @@ export function QuizEngine({ moduleId }: { moduleId: number }) {
   return (
     <div className="space-y-4">
       {submitted && (
-        <GlassCard className="flex items-center justify-between">
+        <Card className="flex items-center justify-between">
           <div>
-            <p className="text-sm text-slate-500 dark:text-slate-400">Викторина нәтижесі</p>
-            <p className="text-2xl font-bold">
+            <p className="text-body text-slate-600 dark:text-slate-400">Викторина нәтижесі</p>
+            <p className="text-h1">
               {score} / {questions.length}
             </p>
           </div>
@@ -63,7 +63,7 @@ export function QuizEngine({ moduleId }: { moduleId: number }) {
           <button onClick={handleRetry} className="btn-secondary text-sm">
             <RotateCcw size={16} /> Қайта тапсыру
           </button>
-        </GlassCard>
+        </Card>
       )}
 
       {!submitted && (
@@ -77,7 +77,7 @@ export function QuizEngine({ moduleId }: { moduleId: number }) {
         const chosen = answers[q.id];
         const isCorrect = chosen === q.correctIndex;
         return (
-          <GlassCard key={q.id}>
+          <Card key={q.id}>
             <p className="mb-3 font-semibold">
               {idx + 1}. {q.question}
             </p>
@@ -96,7 +96,7 @@ export function QuizEngine({ moduleId }: { moduleId: number }) {
                     key={i}
                     disabled={submitted}
                     onClick={() => setAnswers((a) => ({ ...a, [q.id]: i }))}
-                    className={`flex items-center gap-2 rounded-xl border px-3 py-2 text-left text-sm transition ${stateClasses}`}
+                    className={`flex items-center gap-2 rounded-xl border px-3 py-2 text-left text-sm transition-colors ${stateClasses}`}
                   >
                     {submitted && i === q.correctIndex && <CheckCircle2 size={16} className="shrink-0 text-emerald-600" />}
                     {submitted && selected && !isCorrect && <XCircle size={16} className="shrink-0 text-rose-600" />}
@@ -110,7 +110,7 @@ export function QuizEngine({ moduleId }: { moduleId: number }) {
                 <strong>Түсіндірме:</strong> {q.explanation}
               </p>
             )}
-          </GlassCard>
+          </Card>
         );
       })}
 
@@ -123,7 +123,7 @@ export function QuizEngine({ moduleId }: { moduleId: number }) {
           Викторинаны аяқтау
         </button>
       )}
-      {saving && <p className="text-xs text-slate-400">Нәтиже сақталуда...</p>}
+      {saving && <p className="text-micro text-slate-600">Нәтиже сақталуда...</p>}
     </div>
   );
 }

@@ -36,14 +36,14 @@ export default function CertificatesPage() {
       <div className="space-y-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h1 className="text-2xl font-bold">Сертификаттарым</h1>
-            <p className="text-sm text-slate-500 dark:text-slate-400">QR-код арқылы расталатын электронды сертификаттар.</p>
+            <h1 className="text-h1">Сертификаттарым</h1>
+            <p className="text-body text-slate-600 dark:text-slate-400">QR-код арқылы расталатын электронды сертификаттар.</p>
           </div>
           <button onClick={handleIssue} className="btn-primary">Демо сертификат алу</button>
         </div>
 
         {certs.length === 0 ? (
-          <div className="glass-card text-center text-sm text-slate-500 dark:text-slate-400">
+          <div className="surface-card text-center text-body text-slate-600 dark:text-slate-400">
             Әзірге сертификатың жоқ. Курсты аяқтап, сертификат алыңыз.
           </div>
         ) : (

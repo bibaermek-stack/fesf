@@ -3,13 +3,16 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { DashboardShell } from "@/components/layout/DashboardShell";
-import { GlassCard } from "@/components/ui/GlassCard";
+import { Card } from "@/components/ui/Card";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 import { Badge } from "@/components/ui/Badge";
+import { StatCard } from "@/components/ui/StatCard";
+import { SectionHeader } from "@/components/ui/SectionHeader";
+import { LessonCard } from "@/components/ui/LessonCard";
 import { ALL_MODULES } from "@/data/modules";
 import { useAuthStore } from "@/lib/authStore";
 import { getQuizAttempts } from "@/lib/dataStore";
-import { BookOpen, Flame, Trophy, Target, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 export default function StudentDashboard() {
   const user = useAuthStore((s) => s.user);
@@ -28,75 +31,78 @@ export default function StudentDashboard() {
   return (
     <DashboardShell>
       <div className="space-y-6">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <h1 className="text-2xl font-bold">Қош келдің, {user?.fullName?.split(" ")[0] ?? "Студент"}! 👋</h1>
-            <p className="text-sm text-slate-500 dark:text-slate-400">Механика курсындағы прогресіңді осында бақыла.</p>
-          </div>
-          <Link href="/modules" className="btn-primary">
-            Оқуды жалғастыру <ArrowRight size={16} />
-          </Link>
+        <SectionHeader
+          as="h1"
+          title={`Қош келдің, ${user?.fullName?.split(" ")[0] ?? "Студент"}`}
+          description="Механика курсындағы прогресіңді осында бақыла."
+          action={
+            <Link href="/modules" className="btn-primary">
+              Оқуды жалғастыру <ArrowRight size={16} />
+            </Link>
+          }
+        />
+
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <StatCard
+            label="Аяқталған сабақтар"
+            value={`${completedModuleIds.length}/${ALL_MODULES.length}`}
+            context={`Курстың ${progressPercent}%-ы`}
+            tone="brand"
+          />
+          <StatCard
+            label="Құзыреттілік деңгейі"
+            value={user?.competencyScore ?? 0}
+            unit="%"
+            context="10 критерий бойынша рубрика"
+            tone="emerald"
+          />
+          <StatCard
+            label="Жинаған ұпай"
+            value={user?.xp ?? 0}
+            unit="XP"
+            context="Викторина, ойын және БӨЖ үшін"
+            tone="amber"
+          />
+          <StatCard label="Оқу сериясы" value={5} unit="күн" context="Қатарынан белсенді күн" />
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <GlassCard>
-            <BookOpen className="mb-2 text-brand-500" />
-            <p className="text-2xl font-bold">{completedModuleIds.length}/{ALL_MODULES.length}</p>
-            <p className="text-xs text-slate-500 dark:text-slate-400">Аяқталған сабақтар</p>
-          </GlassCard>
-          <GlassCard>
-            <Target className="mb-2 text-emerald-500" />
-            <p className="text-2xl font-bold">{user?.competencyScore ?? 0}%</p>
-            <p className="text-xs text-slate-500 dark:text-slate-400">Құзыреттілік деңгейі</p>
-          </GlassCard>
-          <GlassCard>
-            <Trophy className="mb-2 text-amber-500" />
-            <p className="text-2xl font-bold">{user?.xp ?? 0}</p>
-            <p className="text-xs text-slate-500 dark:text-slate-400">Жинаған XP ұпайы</p>
-          </GlassCard>
-          <GlassCard>
-            <Flame className="mb-2 text-rose-500" />
-            <p className="text-2xl font-bold">5 күн</p>
-            <p className="text-xs text-slate-500 dark:text-slate-400">Оқу серия (streak)</p>
-          </GlassCard>
-        </div>
-
-        <GlassCard>
-          <p className="mb-2 font-semibold">Жалпы курс прогресі</p>
-          <ProgressBar value={progressPercent} label="Барлық сабақтар бойынша" />
-        </GlassCard>
+        <Card>
+          <p className="mb-3 text-h3">Жалпы курс прогресі</p>
+          <ProgressBar
+            value={progressPercent}
+            segments={ALL_MODULES.length}
+            tone="emerald"
+            label="Аяқталған сабақтар"
+          />
+        </Card>
 
         <div>
-          <h2 className="mb-3 text-lg font-semibold">Оқу сабақтары</h2>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {ALL_MODULES.map((m) => {
-              const done = completedModuleIds.includes(m.id);
-              return (
-                <Link key={m.id} href={`/modules/${m.id}`} className="glass-card block">
-                  <div className={`mb-3 h-24 rounded-xl bg-gradient-to-br ${m.colorFrom} ${m.colorTo} p-3 text-white`}>
-                    <p className="text-xs opacity-80">Сабақ {m.id}</p>
-                    <p className="font-semibold">{m.title}</p>
-                  </div>
-                  <p className="line-clamp-2 text-sm text-slate-500 dark:text-slate-400">{m.shortDescription}</p>
-                  <div className="mt-3 flex items-center justify-between">
-                    {done ? <Badge variant="success">Аяқталды</Badge> : <Badge>Оқу керек</Badge>}
-                    <span className="text-xs text-slate-400">{m.videoDurationMinutes} мин</span>
-                  </div>
-                </Link>
-              );
-            })}
+          <SectionHeader title="Оқу сабақтары" />
+          <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {ALL_MODULES.map((m) => (
+              <LessonCard
+                key={m.id}
+                id={m.id}
+                title={m.title}
+                description={m.shortDescription}
+                minutes={m.videoDurationMinutes}
+                done={completedModuleIds.includes(m.id)}
+              />
+            ))}
           </div>
         </div>
 
         {user?.badges && user.badges.length > 0 && (
-          <GlassCard>
-            <p className="mb-2 font-semibold">Жетістіктерің</p>
+          <Card>
+            <p className="mb-3 text-h3">Жетістіктерің</p>
             <div className="flex flex-wrap gap-2">
-              {user.badges.map((b) => (
-                <Badge key={b}>🏅 {b}</Badge>
+              {user.badges.map((b, i) => (
+                <Badge key={b} variant="default" marker={String(i + 1)}>
+                  {b}
+                </Badge>
               ))}
             </div>
-          </GlassCard>
+          </Card>
         )}
       </div>
     </DashboardShell>

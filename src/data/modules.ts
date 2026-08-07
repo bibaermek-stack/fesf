@@ -89,8 +89,6 @@ export const MODULES: LessonModule[] = [
         { left: "Санақ жүйесі", right: "Координаттар мен уақыт есептеу тәсілі" },
       ],
     },
-    colorFrom: "from-blue-500",
-    colorTo: "to-indigo-600",
   },
 
   // ==========================================================
@@ -178,8 +176,6 @@ export const MODULES: LessonModule[] = [
         { left: "Соңғы жылдамдық", right: "v = v₀ + at" },
       ],
     },
-    colorFrom: "from-cyan-500",
-    colorTo: "to-blue-600",
   },
 ];
 
@@ -198,8 +194,6 @@ interface TemplateSeed {
   tasks: string[];
   quizSeeds: { q: string; correct: string; wrong: string[]; explanation: string }[];
   gamePairs: { left: string; right: string }[];
-  colorFrom: string;
-  colorTo: string;
 }
 
 const TEMPLATE_SEEDS: TemplateSeed[] = [
@@ -230,8 +224,6 @@ const TEMPLATE_SEEDS: TemplateSeed[] = [
       { left: "Масса", right: "Инерттілік өлшемі" },
       { left: "Инерция", right: "Қозғалыс күйін сақтау қасиеті" },
     ],
-    colorFrom: "from-violet-500",
-    colorTo: "to-purple-600",
   },
   {
     id: 4,
@@ -259,8 +251,6 @@ const TEMPLATE_SEEDS: TemplateSeed[] = [
       { left: "2-заң", right: "F = ma" },
       { left: "3-заң", right: "Әсер = −кері әсер" },
     ],
-    colorFrom: "from-rose-500",
-    colorTo: "to-pink-600",
   },
   {
     id: 5,
@@ -289,8 +279,6 @@ const TEMPLATE_SEEDS: TemplateSeed[] = [
       { left: "Кинетикалық энергия", right: "Ek = mv²/2" },
       { left: "Потенциалдық энергия", right: "Ep = mgh" },
     ],
-    colorFrom: "from-amber-500",
-    colorTo: "to-orange-600",
   },
   {
     id: 6,
@@ -318,8 +306,6 @@ const TEMPLATE_SEEDS: TemplateSeed[] = [
       { left: "Серпімді соққы", right: "Энергия сақталады" },
       { left: "Серпімсіз соққы", right: "Денелер бірігеді" },
     ],
-    colorFrom: "from-emerald-500",
-    colorTo: "to-teal-600",
   },
   {
     id: 7,
@@ -347,8 +333,6 @@ const TEMPLATE_SEEDS: TemplateSeed[] = [
       { left: "Центрге тартқыш үдеу", right: "a = v²/r" },
       { left: "Период", right: "Бір айналымға кеткен уақыт" },
     ],
-    colorFrom: "from-sky-500",
-    colorTo: "to-cyan-600",
   },
   {
     id: 8,
@@ -377,8 +361,6 @@ const TEMPLATE_SEEDS: TemplateSeed[] = [
       { left: "Период", right: "Бір тербеліске кеткен уақыт" },
       { left: "Жиілік", right: "f = 1/T" },
     ],
-    colorFrom: "from-fuchsia-500",
-    colorTo: "to-purple-600",
   },
   {
     id: 9,
@@ -406,8 +388,6 @@ const TEMPLATE_SEEDS: TemplateSeed[] = [
       { left: "Архимед заңы", right: "Итергіш күш" },
       { left: "Паскаль заңы", right: "Қысымның бірдей таралуы" },
     ],
-    colorFrom: "from-teal-500",
-    colorTo: "to-emerald-600",
   },
   {
     id: 10,
@@ -435,8 +415,6 @@ const TEMPLATE_SEEDS: TemplateSeed[] = [
       { left: "Деформация", right: "Пішін өзгерісі" },
       { left: "Иілу моменті", right: "Июші әсер" },
     ],
-    colorFrom: "from-slate-500",
-    colorTo: "to-gray-700",
   },
 ];
 
@@ -492,8 +470,6 @@ function buildTemplateModule(seed: TemplateSeed): LessonModule {
       instructions: "Сол жақтағы терминді оң жақтағы дұрыс анықтамасымен сәйкестендір.",
       pairs: seed.gamePairs,
     },
-    colorFrom: seed.colorFrom,
-    colorTo: seed.colorTo,
   };
 }
 

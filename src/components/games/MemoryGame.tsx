@@ -57,7 +57,7 @@ export function MemoryGame({
 
   return (
     <div className="space-y-3">
-      <p className="text-xs text-slate-500 dark:text-slate-400">Жүрістер саны: {moves}</p>
+      <p className="text-micro text-slate-600 dark:text-slate-400">Жүрістер саны: {moves}</p>
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
         {cards.map((card) => {
           const isFlipped = flipped.includes(card.key) || matchedPairIds.includes(card.pairId);
@@ -65,7 +65,7 @@ export function MemoryGame({
             <button
               key={card.key}
               onClick={() => handleFlip(card)}
-              className={`flex h-20 items-center justify-center rounded-xl border p-2 text-center text-xs font-medium transition ${
+              className={`flex h-20 items-center justify-center rounded-xl border p-2 text-center text-xs font-medium transition-colors ${
                 matchedPairIds.includes(card.pairId)
                   ? "border-emerald-400 bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-200"
                   : isFlipped
@@ -80,7 +80,7 @@ export function MemoryGame({
       </div>
       {isDone && (
         <p className="rounded-xl bg-emerald-50 p-3 text-center text-sm font-semibold text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-200">
-          🎉 Жады ойыны аяқталды! Жалпы жүрістер: {moves}
+          Жады ойыны аяқталды. Жалпы жүрістер: {moves}
         </p>
       )}
     </div>

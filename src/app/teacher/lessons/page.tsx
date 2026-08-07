@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { DashboardShell } from "@/components/layout/DashboardShell";
-import { GlassCard } from "@/components/ui/GlassCard";
+import { Card } from "@/components/ui/Card";
 import { ALL_MODULES } from "@/data/modules";
 import { Save, Youtube } from "lucide-react";
 
@@ -29,8 +29,8 @@ export default function TeacherLessonsPage() {
     <DashboardShell>
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold">Сабақтарды басқару</h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400">
+          <h1 className="text-h1">Сабақтарды басқару</h1>
+          <p className="text-body text-slate-600 dark:text-slate-400">
             Әр сабақтың YouTube бейнесін кодты өзгертпей-ақ ауыстыруға болады. (Демо режимде өзгеріс браузерде сақталады;
             өндірістік нұсқада Firestore-дың <code>videos</code> коллекциясына жазылады.)
           </p>
@@ -40,12 +40,12 @@ export default function TeacherLessonsPage() {
           {ALL_MODULES.map((m) => {
             const current = overrides[m.id] ?? m.youtubeId;
             return (
-              <GlassCard key={m.id} className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <Card key={m.id} className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-center gap-3">
                   <Youtube className="text-rose-500" />
                   <div>
                     <p className="font-semibold">Сабақ {m.id}: {m.title}</p>
-                    <p className="text-xs text-slate-400">Ағымдағы ID: {current}</p>
+                    <p className="text-micro text-slate-600">Ағымдағы ID: {current}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
@@ -62,10 +62,10 @@ export default function TeacherLessonsPage() {
                     }}
                     className="btn-secondary !px-3 !py-1.5 text-xs"
                   >
-                    <Save size={14} /> {savedFlash === m.id ? "Сақталды ✓" : "Сақтау"}
+                    <Save size={14} /> {savedFlash === m.id ? "Сақталды" : "Сақтау"}
                   </button>
                 </div>
-              </GlassCard>
+              </Card>
             );
           })}
         </div>

@@ -9,10 +9,10 @@ export default function VerifyCertificatePage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center px-4">
-      <div className="glass-card max-w-md text-center">
+      <div className="surface-card max-w-md text-center">
         <ShieldCheck className="mx-auto mb-3 text-emerald-500" size={48} />
-        <h1 className="text-xl font-bold">Сертификат расталды</h1>
-        <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+        <h1 className="text-h2">Сертификат расталды</h1>
+        <p className="mt-2 text-body text-slate-600 dark:text-slate-400">
           Сертификат ID: <span className="font-mono">{id}</span>
         </p>
         <p className="mt-4 text-sm text-slate-600 dark:text-slate-300">

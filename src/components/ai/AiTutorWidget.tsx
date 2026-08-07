@@ -22,7 +22,7 @@ export function AiTutorWidget({ topic }: { topic?: string }) {
     {
       id: "welcome",
       role: "assistant",
-      content: `Сәлем! Мен сенің AI тьюторыңмын 🤖. ${
+      content: `Сәлем! Мен сенің AI тьюторыңмын. ${
         topic ? `"${topic}" тақырыбы` : "Механика пәні"
       } бойынша сұрағың болса, жаз немесе төмендегі жылдам әрекеттерді пайдалан.`,
       createdAt: new Date().toISOString(),
@@ -74,8 +74,8 @@ export function AiTutorWidget({ topic }: { topic?: string }) {
           </div>
         ))}
         {loading && (
-          <div className="flex items-center gap-2 text-xs text-slate-400">
-            <Loader2 size={14} className="animate-spin" /> AI жауап жазып жатыр...
+          <div className="flex items-center gap-2 text-micro text-slate-600">
+            <span className="h-1.5 w-1.5 rounded-full bg-brand-500" /> AI жауап жазып жатыр…
           </div>
         )}
       </div>

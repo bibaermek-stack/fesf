@@ -1,5 +1,5 @@
 import { DashboardShell } from "@/components/layout/DashboardShell";
-import { GlassCard } from "@/components/ui/GlassCard";
+import { Card } from "@/components/ui/Card";
 import { ALL_MODULES } from "@/data/modules";
 import { Users, ClipboardList, BarChart3, Video } from "lucide-react";
 import Link from "next/link";
@@ -16,35 +16,35 @@ export default function TeacherDashboard() {
     <DashboardShell>
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold">Оқытушы дашборды</h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400">Студенттерді, сабақтарды және тапсырмаларды осында басқарыңыз.</p>
+          <h1 className="text-h1">Оқытушы дашборды</h1>
+          <p className="text-body text-slate-600 dark:text-slate-400">Студенттерді, сабақтарды және тапсырмаларды осында басқарыңыз.</p>
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {STAT_CARDS.map((c) => (
-            <GlassCard key={c.label}>
+            <Card key={c.label}>
               <c.icon className="mb-2 text-brand-500" />
-              <p className="text-2xl font-bold">{c.value}</p>
-              <p className="text-xs text-slate-500 dark:text-slate-400">{c.label}</p>
-            </GlassCard>
+              <p className="text-h1">{c.value}</p>
+              <p className="text-micro text-slate-600 dark:text-slate-400">{c.label}</p>
+            </Card>
           ))}
         </div>
 
         <div className="grid gap-4 lg:grid-cols-3">
-          <Link href="/teacher/students" className="glass-card">
+          <Link href="/teacher/students" className="surface-card">
             <Users className="mb-2 text-brand-500" />
             <p className="font-semibold">Студенттерді басқару</p>
-            <p className="text-sm text-slate-500 dark:text-slate-400">Тізім, прогресс, құзыреттілік көрсеткіштері.</p>
+            <p className="text-body text-slate-600 dark:text-slate-400">Тізім, прогресс, құзыреттілік көрсеткіштері.</p>
           </Link>
-          <Link href="/teacher/lessons" className="glass-card">
+          <Link href="/teacher/lessons" className="surface-card">
             <Video className="mb-2 text-brand-500" />
             <p className="font-semibold">Сабақтарды басқару</p>
-            <p className="text-sm text-slate-500 dark:text-slate-400">YouTube сілтемелерін, викторина мен ойындарды өзгерту.</p>
+            <p className="text-body text-slate-600 dark:text-slate-400">YouTube сілтемелерін, викторина мен ойындарды өзгерту.</p>
           </Link>
-          <Link href="/teacher/assignments" className="glass-card">
+          <Link href="/teacher/assignments" className="surface-card">
             <ClipboardList className="mb-2 text-brand-500" />
             <p className="font-semibold">Тапсырмаларды тексеру</p>
-            <p className="text-sm text-slate-500 dark:text-slate-400">БӨЖ тапсырмаларына баға мен кері байланыс қою.</p>
+            <p className="text-body text-slate-600 dark:text-slate-400">БӨЖ тапсырмаларына баға мен кері байланыс қою.</p>
           </Link>
         </div>
       </div>

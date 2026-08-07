@@ -43,29 +43,34 @@ export function Sidebar() {
   const links = role === "teacher" ? TEACHER_LINKS : STUDENT_LINKS;
 
   return (
-    <aside className="hidden w-64 shrink-0 flex-col gap-1 border-r border-slate-200/60 bg-white/60 p-4 dark:border-white/10 dark:bg-slate-900/40 md:flex">
-      <div className="mb-6 flex items-center gap-2 px-2">
-        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-500 font-bold text-white">М</div>
+    <aside className="hidden w-64 shrink-0 flex-col gap-0.5 border-r border-slate-200 bg-white p-3 dark:border-white/10 dark:bg-slate-900 md:flex">
+      <div className="mb-5 flex items-center gap-2.5 px-2 pt-2">
+        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-500 font-bold text-white">
+          М
+        </div>
         <div>
           <p className="text-sm font-bold leading-tight">Механика AI</p>
-          <p className="text-[11px] text-slate-500 dark:text-slate-400">LMS платформасы</p>
+          <p className="text-micro text-slate-500 dark:text-slate-400">LMS платформасы</p>
         </div>
       </div>
       {links.map((link) => {
         const Icon = link.icon;
-        const active = pathname === link.href || (link.href !== "/dashboard" && pathname?.startsWith(link.href));
+        const active =
+          pathname === link.href || (link.href !== "/dashboard" && pathname?.startsWith(link.href));
         return (
           <Link
             key={link.href}
             href={link.href}
+            aria-current={active ? "page" : undefined}
             className={clsx(
-              "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition",
+              // Active state is a left rule plus weight — no shadow, no motion.
+              "flex items-center gap-3 rounded-lg border-l-2 px-3 py-2.5 text-sm transition-colors",
               active
-                ? "bg-brand-500 text-white shadow-md"
-                : "text-slate-600 hover:bg-brand-50 dark:text-slate-300 dark:hover:bg-white/5"
+                ? "border-brand-500 bg-brand-50 font-semibold text-brand-700 dark:bg-brand-900/30 dark:text-brand-200"
+                : "border-transparent font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-white/5 dark:hover:text-white"
             )}
           >
-            <Icon size={18} />
+            <Icon size={17} className="shrink-0" />
             {link.label}
           </Link>
         );

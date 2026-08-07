@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { DashboardShell } from "@/components/layout/DashboardShell";
-import { GlassCard } from "@/components/ui/GlassCard";
+import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { getAssignmentSubmissions } from "@/lib/dataStore";
 import { getModuleById } from "@/data/modules";
@@ -19,12 +19,12 @@ export default function TeacherAssignmentsPage() {
     <DashboardShell>
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold">Тапсырмаларды тексеру</h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400">Студенттердің БӨЖ тапсырмаларына баға мен кері байланыс қойыңыз.</p>
+          <h1 className="text-h1">Тапсырмаларды тексеру</h1>
+          <p className="text-body text-slate-600 dark:text-slate-400">Студенттердің БӨЖ тапсырмаларына баға мен кері байланыс қойыңыз.</p>
         </div>
 
         {subs.length === 0 ? (
-          <div className="glass-card text-center text-sm text-slate-500 dark:text-slate-400">
+          <div className="surface-card text-center text-body text-slate-600 dark:text-slate-400">
             Әзірге жіберілген тапсырма жоқ. Студент сабақ ішіндегі «БӨЖ тапсырмасы» бөлімінен жіберген соң, осында пайда болады.
           </div>
         ) : (
@@ -32,7 +32,7 @@ export default function TeacherAssignmentsPage() {
             {subs.map((s) => {
               const mod = getModuleById(s.moduleId);
               return (
-                <GlassCard key={s.id}>
+                <Card key={s.id}>
                   <div className="flex items-center justify-between">
                     <p className="font-semibold">{mod?.title ?? `Сабақ ${s.moduleId}`}</p>
                     <Badge variant={s.status === "reviewed" ? "success" : "warning"}>
@@ -40,8 +40,8 @@ export default function TeacherAssignmentsPage() {
                     </Badge>
                   </div>
                   <p className="mt-2 whitespace-pre-wrap text-sm text-slate-600 dark:text-slate-300">{s.content}</p>
-                  <p className="mt-2 text-xs text-slate-400">Жіберілген: {new Date(s.submittedAt).toLocaleString("kk-KZ")}</p>
-                </GlassCard>
+                  <p className="mt-2 text-micro text-slate-600">Жіберілген: {new Date(s.submittedAt).toLocaleString("kk-KZ")}</p>
+                </Card>
               );
             })}
           </div>

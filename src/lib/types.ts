@@ -91,8 +91,6 @@ export interface LessonModule {
   assignment: BOZhAssignment;
   quiz: QuizQuestion[];
   game: ModuleGame;
-  colorFrom: string;
-  colorTo: string;
 }
 
 export interface QuizAttempt {

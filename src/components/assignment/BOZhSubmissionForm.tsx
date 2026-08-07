@@ -44,7 +44,7 @@ export function BOZhSubmissionForm({ moduleId, assignment }: { moduleId: number;
 
   if (submitted) {
     return (
-      <div className="glass-card flex items-center gap-3">
+      <div className="surface-card flex items-center gap-3">
         <CheckCircle2 className="text-emerald-500" />
         <p className="text-sm">
           Тапсырмаң сәтті жіберілді! Оқытушы тексеріп, кері байланыс қалдырғанда хабарландыру аласың.
@@ -55,7 +55,7 @@ export function BOZhSubmissionForm({ moduleId, assignment }: { moduleId: number;
 
   return (
     <div className="space-y-4">
-      <div className="glass-card">
+      <div className="surface-card">
         <p className="font-semibold">Жағдаят (кейс)</p>
         <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">{assignment.scenario}</p>
         <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-slate-600 dark:text-slate-300">
@@ -72,7 +72,7 @@ export function BOZhSubmissionForm({ moduleId, assignment }: { moduleId: number;
             <button
               key={t}
               onClick={() => setType(t)}
-              className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition ${
+              className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
                 type === t ? "bg-brand-500 text-white" : "bg-slate-100 text-slate-600 dark:bg-white/5 dark:text-slate-300"
               }`}
             >

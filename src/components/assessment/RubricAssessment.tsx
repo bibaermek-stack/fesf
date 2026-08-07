@@ -37,15 +37,15 @@ export function RubricAssessment({ moduleId }: { moduleId: number }) {
 
   return (
     <div className="space-y-4">
-      <p className="text-sm text-slate-500 dark:text-slate-400">
+      <p className="text-body text-slate-600 dark:text-slate-400">
         Өзіңді әр критерий бойынша 1-ден 5-ке дейін бағала. Бұл бағалау сенің құзыреттілік профиліңе қосылады.
       </p>
       {RUBRIC_CRITERIA.map((c) => (
-        <div key={c.key} className="glass-card">
+        <div key={c.key} className="surface-card">
           <div className="mb-2 flex items-center justify-between">
             <div>
               <p className="font-semibold">{c.label}</p>
-              <p className="text-xs text-slate-500 dark:text-slate-400">{c.description}</p>
+              <p className="text-micro text-slate-600 dark:text-slate-400">{c.description}</p>
             </div>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -53,7 +53,7 @@ export function RubricAssessment({ moduleId }: { moduleId: number }) {
               <button
                 key={level}
                 onClick={() => setScores((s) => ({ ...s, [c.key]: level }))}
-                className={`rounded-lg border px-3 py-1.5 text-xs font-medium transition ${
+                className={`rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors ${
                   scores[c.key] === level
                     ? "border-brand-500 bg-brand-500 text-white"
                     : "border-slate-200 hover:border-brand-300 dark:border-white/10"
@@ -67,11 +67,11 @@ export function RubricAssessment({ moduleId }: { moduleId: number }) {
       ))}
 
       {complete && (
-        <div className="glass-card">
+        <div className="surface-card">
           <p className="mb-2 font-semibold">Жалпы құзыреттілік деңгейі: {RUBRIC_LEVEL_LABELS[Math.round(avg) as 1|2|3|4|5]}</p>
           <ProgressBar value={percent} label="Пайыздық көрсеткіш" />
           <button onClick={handleSave} className="btn-primary mt-3 text-sm" disabled={saved}>
-            {saved ? "Сақталды ✓" : "Бағалауды сақтау"}
+            {saved ? "Сақталды" : "Бағалауды сақтау"}
           </button>
         </div>
       )}

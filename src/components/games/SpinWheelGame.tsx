@@ -1,8 +1,17 @@
 "use client";
 
 import { useState } from "react";
+import { Shuffle } from "lucide-react";
 import type { QuizQuestion } from "@/lib/types";
 
+/**
+ * Random-question picker. This was a spinning wheel; the rotation carried no
+ * information the result did not, so the wheel is now a numbered board — the
+ * drawn number is marked, and every question's state (unanswered / correct /
+ * wrong) stays visible at once, which the wheel could never show.
+ *
+ * The component name is unchanged so the game router keeps resolving it.
+ */
 export function SpinWheelGame({
   questions,
   onComplete,
@@ -10,70 +19,92 @@ export function SpinWheelGame({
   questions: QuizQuestion[];
   onComplete: (score: number) => void;
 }) {
-  const [rotation, setRotation] = useState(0);
-  const [spinning, setSpinning] = useState(false);
-  const [current, setCurrent] = useState<QuizQuestion | null>(null);
+  const [current, setCurrent] = useState<number | null>(null);
   const [answered, setAnswered] = useState<Record<string, boolean>>({});
-  const colors = ["#3366ff", "#1a39b8", "#5c8dff", "#1f47e6", "#8fb4ff", "#1a3391"];
-  const slice = 360 / questions.length;
 
-  function spin() {
-    if (spinning) return;
-    setSpinning(true);
-    setCurrent(null);
-    const pickedIndex = Math.floor(Math.random() * questions.length);
-    const targetRotation = 360 * 4 + pickedIndex * slice + slice / 2;
-    setRotation((r) => r + targetRotation);
-    setTimeout(() => {
-      setSpinning(false);
-      setCurrent(questions[pickedIndex]);
-    }, 2200);
+  const remaining = questions.filter((q) => answered[q.id] === undefined);
+  const correctCount = Object.values(answered).filter(Boolean).length;
+
+  function draw() {
+    if (remaining.length === 0) return;
+    const pick = remaining[Math.floor(Math.random() * remaining.length)];
+    setCurrent(questions.findIndex((q) => q.id === pick.id));
   }
 
   function handleAnswer(q: QuizQuestion, i: number) {
-    const correct = i === q.correctIndex;
-    const next = { ...answered, [q.id]: correct };
+    const next = { ...answered, [q.id]: i === q.correctIndex };
     setAnswered(next);
-    const correctCount = Object.values(next).filter(Boolean).length;
-    onComplete(Math.round((correctCount / questions.length) * 100));
+    onComplete(
+      Math.round((Object.values(next).filter(Boolean).length / questions.length) * 100)
+    );
   }
 
+  const question = current !== null ? questions[current] : null;
+
   return (
-    <div className="flex flex-col items-center gap-6">
-      <div className="relative h-56 w-56">
-        <div
-          className="h-full w-full rounded-full border-4 border-brand-600 shadow-lg transition-transform duration-[2200ms] ease-out"
-          style={{
-            transform: `rotate(${rotation}deg)`,
-            background: `conic-gradient(${questions
-              .map((_, i) => `${colors[i % colors.length]} ${i * slice}deg ${(i + 1) * slice}deg`)
-              .join(", ")})`,
-          }}
-        />
-        <div className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1 text-2xl">🔻</div>
+    <div className="space-y-4">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex flex-wrap gap-2">
+          {questions.map((q, i) => {
+            const state = answered[q.id];
+            return (
+              <span
+                key={q.id}
+                className={[
+                  "data-num flex h-10 w-10 items-center justify-center rounded-xl border text-sm font-bold",
+                  state === true
+                    ? "border-emerald-300 bg-emerald-50 text-emerald-700 dark:border-emerald-400/30 dark:bg-emerald-900/30 dark:text-emerald-200"
+                    : state === false
+                    ? "border-rose-300 bg-rose-50 text-rose-700 dark:border-rose-400/30 dark:bg-rose-900/30 dark:text-rose-200"
+                    : current === i
+                    ? "border-brand-500 bg-brand-500 text-white"
+                    : "border-slate-200 bg-white text-slate-500 dark:border-white/10 dark:bg-white/5 dark:text-slate-400",
+                ].join(" ")}
+              >
+                {i + 1}
+              </span>
+            );
+          })}
+        </div>
+        <span className="data-num text-body font-semibold text-slate-600 dark:text-slate-300">
+          {correctCount} / {questions.length}
+        </span>
       </div>
-      <button onClick={spin} disabled={spinning} className="btn-primary">
-        {spinning ? "Айналуда..." : "Дөңгелекті айналдыру"}
+
+      <button onClick={draw} disabled={remaining.length === 0} className="btn-primary">
+        <Shuffle size={16} />
+        {remaining.length === 0 ? "Барлық сұрақ өтілді" : "Кездейсоқ сұрақ таңдау"}
       </button>
 
-      {current && !spinning && (
-        <div className="glass-card w-full max-w-md space-y-3">
-          <p className="font-semibold">{current.question}</p>
+      {question && (
+        <div className="surface-card space-y-3">
+          <p className="text-label uppercase text-slate-500 dark:text-slate-400">
+            {(current ?? 0) + 1}-сұрақ
+          </p>
+          <p className="text-h3">{question.question}</p>
           <div className="grid gap-2">
-            {current.options.map((opt, i) => (
+            {question.options.map((opt, i) => (
               <button
                 key={i}
-                disabled={answered[current.id] !== undefined}
-                onClick={() => handleAnswer(current, i)}
-                className="rounded-xl border border-slate-200 px-3 py-2 text-left text-sm hover:border-brand-300 dark:border-white/10"
+                disabled={answered[question.id] !== undefined}
+                onClick={() => handleAnswer(question, i)}
+                className="rounded-xl border border-slate-200 px-3 py-2.5 text-left text-body transition-colors hover:border-brand-300 hover:bg-brand-50/50 disabled:hover:border-slate-200 disabled:hover:bg-transparent dark:border-white/10 dark:hover:bg-white/5"
               >
                 {opt}
               </button>
             ))}
           </div>
-          {answered[current.id] !== undefined && (
-            <p className={answered[current.id] ? "text-emerald-600" : "text-rose-600"}>
-              {answered[current.id] ? "✅ Дұрыс жауап!" : "❌ Қате жауап. Түсіндірме: " + current.explanation}
+          {answered[question.id] !== undefined && (
+            <p
+              className={
+                answered[question.id]
+                  ? "rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-body font-semibold text-emerald-700 dark:border-emerald-400/25 dark:bg-emerald-900/25 dark:text-emerald-200"
+                  : "rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-body text-rose-700 dark:border-rose-400/25 dark:bg-rose-900/25 dark:text-rose-200"
+              }
+            >
+              {answered[question.id]
+                ? "Дұрыс жауап."
+                : `Қате жауап. Түсіндірме: ${question.explanation}`}
             </p>
           )}
         </div>

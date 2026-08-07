@@ -22,7 +22,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="kk" suppressHydrationWarning>
-      <body className="min-h-screen bg-grid-glow antialiased">
+      <body className="min-h-screen antialiased">
         <AppProviders>{children}</AppProviders>
       </body>
     </html>

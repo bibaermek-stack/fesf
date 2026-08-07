@@ -34,7 +34,7 @@ export function VideoPlayer({
         <div className="flex items-start justify-between gap-3">
           <div>
             <h3 className="font-semibold">{title}</h3>
-            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{description}</p>
+            <p className="mt-1 text-body text-slate-600 dark:text-slate-400">{description}</p>
           </div>
           {watched && (
             <span className="badge shrink-0 !bg-emerald-100 !text-emerald-700 dark:!bg-emerald-900/40 dark:!text-emerald-200">
@@ -42,7 +42,7 @@ export function VideoPlayer({
             </span>
           )}
         </div>
-        <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+        <div className="flex items-center gap-2 text-micro text-slate-600 dark:text-slate-400">
           <Clock size={14} />
           <span>Ұзақтығы: {durationMinutes} мин</span>
         </div>

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { DashboardShell } from "@/components/layout/DashboardShell";
-import { GlassCard } from "@/components/ui/GlassCard";
+import { Card } from "@/components/ui/Card";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 import { CompetencyRadarChart } from "@/components/charts/CompetencyRadarChart";
 import { ActivityBarChart } from "@/components/charts/ActivityBarChart";
@@ -60,8 +60,8 @@ export default function AnalyticsPage() {
       <div className="space-y-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h1 className="text-2xl font-bold">Оқу аналитикасы</h1>
-            <p className="text-sm text-slate-500 dark:text-slate-400">Прогресс, құзыреттілік өсуі және белсенділік көрсеткіштері.</p>
+            <h1 className="text-h1">Оқу аналитикасы</h1>
+            <p className="text-body text-slate-600 dark:text-slate-400">Прогресс, құзыреттілік өсуі және белсенділік көрсеткіштері.</p>
           </div>
           <div className="flex gap-2">
             <button onClick={exportCsv} className="btn-secondary text-sm"><Sheet size={16} /> Excel (CSV) экспорт</button>
@@ -70,38 +70,38 @@ export default function AnalyticsPage() {
         </div>
 
         <div className="grid gap-4 lg:grid-cols-3">
-          <GlassCard>
-            <p className="mb-1 text-sm text-slate-500 dark:text-slate-400">Қорытынды баға</p>
+          <Card>
+            <p className="mb-1 text-body text-slate-600 dark:text-slate-400">Қорытынды баға</p>
             <p className="text-3xl font-bold text-brand-600 dark:text-brand-300">{grade.weightedTotal}%</p>
             <p className="mt-1 text-sm">{grade.competencyLevel} деңгей</p>
-          </GlassCard>
-          <GlassCard>
-            <p className="mb-2 text-sm text-slate-500 dark:text-slate-400">Курс прогресі</p>
+          </Card>
+          <Card>
+            <p className="mb-2 text-body text-slate-600 dark:text-slate-400">Курс прогресі</p>
             <ProgressBar value={68} label="10 сабақтың 6.8-і аяқталды" />
-          </GlassCard>
-          <GlassCard>
-            <p className="mb-2 text-sm text-slate-500 dark:text-slate-400">Жалпы оқу уақыты</p>
+          </Card>
+          <Card>
+            <p className="mb-2 text-body text-slate-600 dark:text-slate-400">Жалпы оқу уақыты</p>
             <p className="text-3xl font-bold">14 сағ 20 мин</p>
-          </GlassCard>
+          </Card>
         </div>
 
         <div className="grid gap-4 lg:grid-cols-2">
-          <GlassCard>
+          <Card>
             <p className="mb-3 font-semibold">Құзыреттілік радары (10 критерий)</p>
             <CompetencyRadarChart values={MOCK_RADAR} />
-          </GlassCard>
-          <GlassCard>
+          </Card>
+          <Card>
             <p className="mb-3 font-semibold">Апталық белсенділік</p>
             <ActivityBarChart values={MOCK_WEEKLY} />
-          </GlassCard>
+          </Card>
         </div>
 
-        <GlassCard>
+        <Card>
           <p className="mb-3 font-semibold">Қорытынды баға құрылымы (салмақтар)</p>
           <div className="mx-auto max-w-md">
             <GradeBreakdownPieChart />
           </div>
-        </GlassCard>
+        </Card>
       </div>
     </DashboardShell>
   );

@@ -21,8 +21,8 @@ export default function LeaderboardPage() {
     <DashboardShell>
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold">Көшбасшылар кестесі</h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400">Топтастарыңмен жарысып, XP ұпайын жина.</p>
+          <h1 className="text-h1">Көшбасшылар кестесі</h1>
+          <p className="text-body text-slate-600 dark:text-slate-400">Топтастарыңмен жарысып, XP ұпайын жина.</p>
         </div>
         <LeaderboardTable entries={sorted} currentUserId={user?.uid} />
       </div>

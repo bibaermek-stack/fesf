@@ -39,9 +39,9 @@ export function FlashCardsGame({
           setFlipped((f) => !f);
           markSeen(index);
         }}
-        className="glass-card flex h-48 w-full max-w-md cursor-pointer items-center justify-center p-6 text-center"
+        className="surface-card flex h-48 w-full max-w-md cursor-pointer items-center justify-center p-6 text-center transition-colors hover:border-brand-300"
       >
-        <p className={flipped ? "text-sm text-slate-600 dark:text-slate-300" : "text-lg font-bold"}>
+        <p className={flipped ? "text-body text-slate-600 dark:text-slate-300" : "text-h2"}>
           {flipped ? current.definition : current.term}
         </p>
       </button>
@@ -49,7 +49,7 @@ export function FlashCardsGame({
         <button onClick={() => go(-1)} className="btn-secondary !px-3 !py-2">
           <ChevronLeft size={16} />
         </button>
-        <span className="text-xs text-slate-500 dark:text-slate-400">
+        <span className="text-micro text-slate-600 dark:text-slate-400">
           {index + 1} / {terms.length} • Көрілгені: {seen.size}
         </span>
         <button onClick={() => go(1)} className="btn-secondary !px-3 !py-2">
@@ -61,7 +61,7 @@ export function FlashCardsGame({
       </div>
       {seen.size === terms.length && (
         <p className="rounded-xl bg-emerald-50 p-3 text-center text-sm font-semibold text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-200">
-          🎉 Барлық карточкаларды қарап шықтыңыз!
+          Барлық карточкаларды қарап шықтыңыз!
         </p>
       )}
     </div>

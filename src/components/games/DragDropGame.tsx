@@ -59,7 +59,7 @@ export function DragDropGame({
             key={p.left}
             onDragOver={(e) => e.preventDefault()}
             onDrop={() => handleDrop(p.left)}
-            className={`flex min-h-[3rem] items-center justify-between rounded-xl border-2 border-dashed px-3 py-2 text-sm transition ${
+            className={`flex min-h-[3rem] items-center justify-between rounded-xl border-2 border-dashed px-3 py-2 text-sm transition-colors ${
               placed[p.left]
                 ? "border-emerald-400 bg-emerald-50 dark:bg-emerald-900/20"
                 : wrongTarget === p.left
@@ -74,7 +74,7 @@ export function DragDropGame({
       </div>
       {isDone && (
         <p className="rounded-xl bg-emerald-50 p-3 text-center text-sm font-semibold text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-200">
-          🎉 Тамаша! Барлық формулалар/ұғымдар дұрыс орналастырылды.
+          Тамаша! Барлық формулалар мен ұғымдар дұрыс орналастырылды.
         </p>
       )}
     </div>

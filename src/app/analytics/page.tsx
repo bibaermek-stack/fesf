@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import { DashboardShell } from "@/components/layout/DashboardShell";
 import { Card } from "@/components/ui/Card";
 import { ProgressBar } from "@/components/ui/ProgressBar";
@@ -9,8 +10,20 @@ import { ActivityBarChart } from "@/components/charts/ActivityBarChart";
 import { GradeBreakdownPieChart } from "@/components/charts/GradeBreakdownPieChart";
 import { useAuthStore } from "@/lib/authStore";
 import { computeFinalGrade, GRADE_WEIGHTS } from "@/lib/competency";
-import { FileDown, Sheet } from "lucide-react";
+import { FileDown, Sheet, Sparkles } from "lucide-react";
 import type { FinalGradeBreakdown } from "@/lib/types";
+
+const CompetencyGlobe3D = dynamic(
+  () => import("@/components/charts/CompetencyGlobe3D").then((m) => m.CompetencyGlobe3D),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="surface-sunken flex h-[360px] items-center justify-center text-body text-slate-500">
+        3D Құзыреттілік сферасы дайындалуда…
+      </div>
+    ),
+  }
+);
 
 const MOCK_BREAKDOWN: FinalGradeBreakdown = {
   video: 90,
@@ -73,7 +86,7 @@ export default function AnalyticsPage() {
           <Card>
             <p className="mb-1 text-body text-slate-600 dark:text-slate-400">Қорытынды баға</p>
             <p className="text-3xl font-bold text-brand-600 dark:text-brand-300">{grade.weightedTotal}%</p>
-            <p className="mt-1 text-sm">{grade.competencyLevel} деңгей</p>
+            <p className="mt-1 text-sm font-medium text-emerald-600 dark:text-emerald-400">{grade.competencyLevel} деңгей</p>
           </Card>
           <Card>
             <p className="mb-2 text-body text-slate-600 dark:text-slate-400">Курс прогресі</p>
@@ -85,23 +98,35 @@ export default function AnalyticsPage() {
           </Card>
         </div>
 
-        <div className="grid gap-4 lg:grid-cols-2">
+        {/* 3D Skill Globe & Radar Grid */}
+        <div className="grid gap-6 lg:grid-cols-2">
+          <Card>
+            <p className="mb-3 font-semibold flex items-center gap-2">
+              <Sparkles size={18} className="text-brand-600 dark:text-brand-400" />
+              Жеке 3D Құзыреттілік Сферасы
+            </p>
+            <CompetencyGlobe3D values={MOCK_RADAR} />
+          </Card>
+
           <Card>
             <p className="mb-3 font-semibold">Құзыреттілік радары (10 критерий)</p>
             <CompetencyRadarChart values={MOCK_RADAR} />
           </Card>
+        </div>
+
+        <div className="grid gap-4 lg:grid-cols-2">
           <Card>
             <p className="mb-3 font-semibold">Апталық белсенділік</p>
             <ActivityBarChart values={MOCK_WEEKLY} />
           </Card>
-        </div>
 
-        <Card>
-          <p className="mb-3 font-semibold">Қорытынды баға құрылымы (салмақтар)</p>
-          <div className="mx-auto max-w-md">
-            <GradeBreakdownPieChart />
-          </div>
-        </Card>
+          <Card>
+            <p className="mb-3 font-semibold">Қорытынды баға құрылымы (салмақтар)</p>
+            <div className="mx-auto max-w-md">
+              <GradeBreakdownPieChart />
+            </div>
+          </Card>
+        </div>
       </div>
     </DashboardShell>
   );

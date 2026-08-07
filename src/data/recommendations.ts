@@ -11,23 +11,9 @@ import {
   studentProgress,
   type StudentRow,
 } from "./cohort";
+import type { ActionItem, ActionSeverity } from "@/lib/types";
 
-export type ActionSeverity = "critical" | "warning" | "info";
-
-export interface ActionItem {
-  id: string;
-  severity: ActionSeverity;
-  /** Short category shown as a chip. */
-  kind: string;
-  title: string;
-  /** Why this surfaced — the evidence, in numbers. */
-  evidence: string;
-  /** The concrete next step. */
-  action: string;
-  href?: string;
-  /** People or lessons the item refers to. */
-  names?: string[];
-}
+export type { ActionItem, ActionSeverity };
 
 /** A lesson is "hard" when the cohort average falls below this. */
 const HARD_LESSON_AVG = 72;
@@ -64,7 +50,7 @@ export function buildActions(rows: StudentRow[] = COHORT): ActionItem[] {
   //    student problem, so it is ranked next.
   const hard = averages
     .map((avg, i) => ({ avg, i }))
-    .filter((x) => x.avg > 0 && x.avg < HARD_LESSON_AVG)
+    .filter((x): x is { avg: number; i: number } => x.avg !== null && x.avg < HARD_LESSON_AVG)
     .sort((a, b) => a.avg - b.avg);
   for (const h of hard.slice(0, 2)) {
     items.push({

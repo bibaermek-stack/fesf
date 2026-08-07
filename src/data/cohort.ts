@@ -97,11 +97,15 @@ export const COHORT = buildCohort();
 export const LESSON_LABELS = ALL_MODULES.map((m) => `${m.id}. ${m.title}`);
 export const LESSON_SHORT = ALL_MODULES.map((m) => String(m.id));
 
-/** Average quiz score per lesson, over the students who attempted it. */
-export function lessonAverages(rows: StudentRow[] = COHORT): number[] {
+/**
+ * Average quiz score per lesson, over the students who attempted it. `null`
+ * means nobody has — kept distinct from a low score so a chart can grey out
+ * "not reached yet" instead of colouring it as a failing average.
+ */
+export function lessonAverages(rows: StudentRow[] = COHORT): (number | null)[] {
   return ALL_MODULES.map((_, l) => {
     const taken = rows.map((r) => r.scores[l]).filter((s): s is number => s !== null);
-    if (taken.length === 0) return 0;
+    if (taken.length === 0) return null;
     return Math.round(taken.reduce((a, b) => a + b, 0) / taken.length);
   });
 }

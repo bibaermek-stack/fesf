@@ -216,3 +216,26 @@ export interface AnalyticsSnapshot {
   competencyRadar: { criterion: RubricCriterionKey; value: number }[];
   timeSpentTotalMinutes: number;
 }
+
+export type ActionSeverity = "critical" | "warning" | "info";
+
+/**
+ * One row in a "what to do next" list. Shared shape for both the teacher's
+ * cohort-wide recommendations (src/data/recommendations.ts, built from mock
+ * aggregate data) and each student's personal plan (src/lib/studentPlan.ts,
+ * built from their own real quiz attempts and submissions).
+ */
+export interface ActionItem {
+  id: string;
+  severity: ActionSeverity;
+  /** Short category shown as a chip, e.g. "Қайталау", "БӨЖ". */
+  kind: string;
+  title: string;
+  /** Why this surfaced — the evidence, in numbers. */
+  evidence: string;
+  /** The concrete next step. */
+  action: string;
+  href?: string;
+  /** People or lessons the item refers to. */
+  names?: string[];
+}

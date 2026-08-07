@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { FileDown, Sheet } from "lucide-react";
+import { FileDown, Sheet, Sparkles, TrendingUp, Clock, Grid } from "lucide-react";
 import { DashboardShell } from "@/components/layout/DashboardShell";
 import { Card } from "@/components/ui/Card";
 import { StatCard } from "@/components/ui/StatCard";
@@ -13,7 +13,10 @@ import { CompetencyRadarChart } from "@/components/charts/CompetencyRadarChart";
 import { LessonScoreChart } from "@/components/charts/LessonScoreChart";
 import { ProgressDistributionChart } from "@/components/charts/ProgressDistributionChart";
 import { CompletionFunnel } from "@/components/charts/CompletionFunnel";
-import { ActionList } from "@/components/teacher/ActionList";
+import { ActionList } from "@/components/ui/ActionList";
+import { WeeklyHeatmapChart } from "@/components/charts/WeeklyHeatmapChart";
+import { LessonScatterChart } from "@/components/charts/LessonScatterChart";
+import { TrendLineChart } from "@/components/charts/TrendLineChart";
 import { ALL_MODULES } from "@/data/modules";
 import {
   COHORT,
@@ -28,20 +31,32 @@ import {
 } from "@/data/cohort";
 import { buildActions } from "@/data/recommendations";
 
-// three.js only ships when this page is opened, same as the lesson simulations.
+// Dynamic imports for Three.js components
 const ScoreMatrix3D = dynamic(
   () => import("@/components/charts/ScoreMatrix3D").then((m) => m.ScoreMatrix3D),
   {
     ssr: false,
     loading: () => (
       <div className="surface-sunken flex h-[360px] items-center justify-center text-body text-slate-500">
-        3D диаграмма дайындалуда…
+        3D Матрица диаграммасы дайындалуда…
       </div>
     ),
   }
 );
 
-const COMPETENCY = [4, 3, 4, 3, 3, 4, 3, 3, 4, 3];
+const CompetencyGlobe3D = dynamic(
+  () => import("@/components/charts/CompetencyGlobe3D").then((m) => m.CompetencyGlobe3D),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="surface-sunken flex h-[360px] items-center justify-center text-body text-slate-500">
+        3D Құзыреттілік сферасы дайындалуда…
+      </div>
+    ),
+  }
+);
+
+const COMPETENCY = [4.2, 3.8, 4.5, 3.2, 3.9, 4.1, 3.5, 3.0, 4.0, 3.7];
 
 export default function TeacherAnalyticsPage() {
   const summary = cohortSummary();
@@ -49,8 +64,9 @@ export default function TeacherAnalyticsPage() {
   const completion = lessonCompletion();
   const actions = buildActions();
 
-  const weakest = averages.indexOf(Math.min(...averages.filter((a) => a > 0)));
-  const strongest = averages.indexOf(Math.max(...averages));
+  const known = averages.filter((a): a is number => a !== null);
+  const weakest = averages.indexOf(Math.min(...known));
+  const strongest = averages.indexOf(Math.max(...known));
 
   const columns: Column<StudentRow>[] = [
     { key: "name", header: "Студент", render: (r) => r.fullName },
@@ -101,18 +117,16 @@ export default function TeacherAnalyticsPage() {
           }
         />
 
-        {/* What to do — placed above the charts, because it is the answer the
-            charts exist to produce. */}
-        <section>
+        {/* Actionable Work Planner Widget ("Не істеу керек") */}
+        <section className="space-y-3">
           <SectionHeader
             title="Не істеу керек"
-            description="Төмендегі көрсеткіштерден шыққан, маңыздылығы бойынша реттелген тізім."
+            description="Аналитика көрсеткіштерінен алынған, маңыздылығы мен басымдығы бойынша реттелген мұғалімнің тапсырмалар тізімі."
           />
-          <div className="mt-3">
-            <ActionList items={actions} />
-          </div>
+          <ActionList items={actions} />
         </section>
 
+        {/* Key Metrics Stats Grid */}
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <StatCard
             label="Орташа курс прогресі"
@@ -143,19 +157,67 @@ export default function TeacherAnalyticsPage() {
           />
         </div>
 
-        {/* 3D matrix ------------------------------------------------------- */}
-        <Card>
-          <SectionHeader
-            title="Студенттер × сабақтар: ұпай матрицасы (3D)"
-            description="Бір бағанның толық төмен болуы — қиын сабақ; бір қатардың төмен болуы — қиналып жүрген студент."
-          />
-          <div className="mt-4">
-            <ScoreMatrix3D rows={COHORT} />
-          </div>
-        </Card>
+        {/* 3D Visualizations Section ----------------------------------------- */}
+        <div className="grid gap-6 lg:grid-cols-2">
+          {/* 3D Score Matrix */}
+          <Card>
+            <SectionHeader
+              title="Студенттер × сабақтар: 3D Ұпай Матрицасы"
+              description="Студенттер мен сабақтар нәтижелерін 3D бағандар немесе рельефтік тор түрінде айналдырып визуализациялау."
+            />
+            <div className="mt-4">
+              <ScoreMatrix3D rows={COHORT} />
+            </div>
+          </Card>
 
-        {/* Flat charts ----------------------------------------------------- */}
-        <div className="grid gap-4 lg:grid-cols-2">
+          {/* 3D Competency Globe */}
+          <Card>
+            <SectionHeader
+              title="3D Құзыреттілік Сферасы"
+              description="Курстың 10 негізгі физика-инженерлік құзыреттілігінің студенттер арасында меңгерілу деңгейі."
+            />
+            <div className="mt-4">
+              <CompetencyGlobe3D values={COMPETENCY} />
+            </div>
+          </Card>
+        </div>
+
+        {/* Advanced 2D Charts Grid ------------------------------------------- */}
+        <div className="grid gap-6 lg:grid-cols-2">
+          {/* Time Series Trend Line Chart */}
+          <Card>
+            <SectionHeader
+              title="Үлгерім мен Белсенділік Тренды"
+              description="Апталар бойынша орташа викторина ұпайы мен студенттердің оқу сағаттарының өсу динамикасы."
+            />
+            <div className="mt-4">
+              <TrendLineChart />
+            </div>
+          </Card>
+
+          {/* Weekly Heatmap Activity Chart */}
+          <Card>
+            <SectionHeader
+              title="Апталық Сабақ Оқу Жүктемесі (Heatmap)"
+              description="Апта күндері мен сағаттары бойынша платформаны пайдалану тығыздығы."
+            />
+            <div className="mt-4">
+              <WeeklyHeatmapChart />
+            </div>
+          </Card>
+
+          {/* Lesson Scatter/Bubble Chart */}
+          <Card className="lg:col-span-2">
+            <SectionHeader
+              title="Сабақтар Күрделілігі мен Жұмсалған Уақыт Анализы"
+              description="Орташа ұпай (X) vs Жұмсалған уақыт (Y) vs Студенттердің жетпей шығып қалуы (Шар өлшемі)."
+            />
+            <div className="mt-4">
+              <LessonScatterChart />
+            </div>
+          </Card>
+
+          {/* Lesson Scores Bar Chart */}
           <Card>
             <p className="mb-1 text-h3">Сабақтар бойынша орташа ұпай</p>
             <p className="mb-4 text-micro text-slate-600 dark:text-slate-400">
@@ -165,6 +227,7 @@ export default function TeacherAnalyticsPage() {
             <LessonScoreChart values={averages} />
           </Card>
 
+          {/* Progress Distribution */}
           <Card>
             <p className="mb-1 text-h3">Прогресс таралуы</p>
             <p className="mb-4 text-micro text-slate-600 dark:text-slate-400">
@@ -173,6 +236,7 @@ export default function TeacherAnalyticsPage() {
             <ProgressDistributionChart buckets={progressDistribution()} />
           </Card>
 
+          {/* Completion Funnel */}
           <Card>
             <p className="mb-1 text-h3">Сабақтарды аяқтау және шығып қалу</p>
             <p className="mb-4 text-micro text-slate-600 dark:text-slate-400">
@@ -181,20 +245,14 @@ export default function TeacherAnalyticsPage() {
             <CompletionFunnel counts={completion} total={COHORT.length} />
           </Card>
 
+          {/* Weekly Minutes Activity */}
           <Card>
             <p className="mb-4 text-h3">Топтың апталық белсенділігі (минут)</p>
             <ActivityBarChart values={cohortWeekly()} />
           </Card>
-
-          <Card className="lg:col-span-2">
-            <p className="mb-4 text-h3">Топтың орташа құзыреттілік радары</p>
-            <div className="mx-auto max-w-xl">
-              <CompetencyRadarChart values={COMPETENCY} />
-            </div>
-          </Card>
         </div>
 
-        {/* Roster ---------------------------------------------------------- */}
+        {/* Roster Table ------------------------------------------------------ */}
         <section>
           <SectionHeader
             title="Студенттер тізімі"

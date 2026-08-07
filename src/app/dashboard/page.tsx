@@ -9,21 +9,30 @@ import { Badge } from "@/components/ui/Badge";
 import { StatCard } from "@/components/ui/StatCard";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { LessonCard } from "@/components/ui/LessonCard";
+import { ActionList } from "@/components/ui/ActionList";
+import { LoadingBlock } from "@/components/ui/Skeleton";
+import { LessonScoreChart } from "@/components/charts/LessonScoreChart";
 import { ALL_MODULES } from "@/data/modules";
 import { useAuthStore } from "@/lib/authStore";
-import { getQuizAttempts } from "@/lib/dataStore";
+import { buildStudentPlan, studentLessonScores } from "@/lib/studentPlan";
+import type { ActionItem } from "@/lib/types";
 import { ArrowRight } from "lucide-react";
 
 export default function StudentDashboard() {
   const user = useAuthStore((s) => s.user);
   const [completedModuleIds, setCompletedModuleIds] = useState<number[]>([]);
+  const [scores, setScores] = useState<(number | null)[] | null>(null);
+  const [plan, setPlan] = useState<ActionItem[] | null>(null);
 
   useEffect(() => {
     if (!user) return;
-    getQuizAttempts(user.uid).then((attempts) => {
-      const ids = Array.from(new Set(attempts.filter((a) => a.score >= a.total * 0.6).map((a) => a.moduleId)));
-      setCompletedModuleIds(ids);
+    studentLessonScores(user.uid).then((s) => {
+      setScores(s);
+      setCompletedModuleIds(
+        ALL_MODULES.filter((_, i) => (s[i] ?? -1) >= 60).map((m) => m.id)
+      );
     });
+    buildStudentPlan(user.uid).then(setPlan);
   }, [user]);
 
   const progressPercent = Math.round((completedModuleIds.length / ALL_MODULES.length) * 100);
@@ -74,6 +83,36 @@ export default function StudentDashboard() {
             tone="emerald"
             label="Аяқталған сабақтар"
           />
+        </Card>
+
+        {/* Personal plan — the same "what to do next" idea the teacher sees
+            for the whole cohort, but built from this student's own quiz
+            attempts and submissions (see src/lib/studentPlan.ts), so it never
+            contradicts the progress numbers above it. */}
+        <section>
+          <SectionHeader
+            title="Өзіндік жұмыс жоспары"
+            description="Соңғы нәтижелерің бойынша жасалған жеке ұсыныстар — келесі не істеу керегін осыдан көресің."
+          />
+          <div className="mt-3">
+            {plan ? (
+              <ActionList items={plan} emptyMessage="Қазір бәрі ретте — жаңа тапсырма пайда болғанда осында көрінеді." />
+            ) : (
+              <LoadingBlock lines={3} />
+            )}
+          </div>
+        </section>
+
+        <Card>
+          <p className="mb-1 text-h3">Сабақтар бойынша ұпайларың</p>
+          <p className="mb-4 text-micro text-slate-600 dark:text-slate-400">
+            Әр бағанға тінтуірді апарып нақты пайызды көр. Сұр баған — әлі тапсырылмаған сабақ.
+          </p>
+          {scores ? (
+            <LessonScoreChart values={scores} label="Ұпайың, %" />
+          ) : (
+            <LoadingBlock lines={3} />
+          )}
         </Card>
 
         <div>
